@@ -51,7 +51,7 @@ def tts(model, text, p=0, speaker_id=None, fast=False):
     if fast:
         model.make_generation_fast_()
 
-    sequence = np.array(_frontend.text_to_sequence_original(text, p=p))
+    sequence = np.array(_frontend.text_to_sequence(text, p=p))
     print('sequence to synthesize: ', sequence)
     sequence = torch.from_numpy(sequence).unsqueeze(0).long().to(device)
     text_positions = torch.arange(1, sequence.size(-1) + 1).unsqueeze(0).long().to(device)
@@ -82,37 +82,6 @@ def _load(checkpoint_path):
                                 map_location=lambda storage, loc: storage)
     return checkpoint
 
-def coupure(phrase):
-    text = []
-    if len(phrase) >= 120: # Ce nombre a été choisi empiriquement mais peut être modifié.
-        mots = phrase.split(' ')
-        liste = []
-        for mot in mots:
-            liste.append(mot)
-            if (('.' in mot) | ('?' in mot) | ('...' in mot)) & ((mot != 'M.')):
-                text.append(' '.join(liste))
-                longu = len(text[-1])
-                stop = 1
-                liste_2 = []
-                while (longu >= 120) & (stop != 0):
-                     if stop > 0:
-                        mots_2 = text[-1].split(' ')
-                        text.pop()
-                     for mot_2 in mots_2:
-                        liste_2.append(mot_2)
-                        if (('],' in mot_2)):
-                            text.append(' '.join(liste_2))
-                            liste_2 = []
-                     stop -= 1
-                if len(liste_2) != 0:
-                     text.append(' '.join(liste_2))
-                liste = []
-        if len(liste) != 0:
-             text.append(' '.join(liste))
-    if len(text) != 0:
-         return text
-    else:
-         return [phrase]
 
 if __name__ == "__main__":
     args = docopt(__doc__)
@@ -164,13 +133,12 @@ if __name__ == "__main__":
     os.makedirs(dst_dir, exist_ok=True)
     with open(text_list_file_path, "rb") as f:
         lines = f.readlines()
-        for idx, line in enumerate(lines): # Correspond à un fichier audio.
+        for idx, line in enumerate(lines):
             #text = line.decode("utf-8")[:-1]
             tx = re.sub("(_LSB_).*?(_RSB_)", "", line.decode("utf-8")[:-1])
             matchObj = re.findall('([^\.|\?|\!]+)([\.|\?|\!]+|$)', tx)
             texts = [join(x[0], x[1]).replace('/', '') for x in matchObj]
-            # Ajout de la coupure
-            #texts = coupure(''.join(texts))
+            print(texts)
             waveform = np.empty((0,))
             for text in texts:
                 words_t = nltk.word_tokenize(text)

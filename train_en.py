@@ -108,10 +108,9 @@ class TextDataSource(FileDataSource):
         with open(meta, "rb") as f:
             lines = f.readlines()
         l = lines[0].decode("utf-8").split("|")
-        assert len(l) == 5 or len(l) == 6
-        self.multi_speaker = len(l) == 6
+        assert len(l) == 4 or len(l) == 5
+        self.multi_speaker = len(l) == 5
         texts = list(map(lambda l: l.decode("utf-8").split("|")[3], lines))
-        phones = list(map(lambda l: l.decode("utf-8").split("|")[4], lines))
         if self.multi_speaker:
             speaker_ids = list(map(lambda l: int(l.decode("utf-8").split("|")[-1]), lines))
             # Filter by speaker_id
@@ -124,18 +123,17 @@ class TextDataSource(FileDataSource):
 
             return texts, speaker_ids
         else:
-            return texts, phones
+            return texts
 
     def collect_features(self, *args):
         if self.multi_speaker:
             text, speaker_id = args
         else:
             text = args[0]
-            phone = args[1]
         global _frontend
         if _frontend is None:
             _frontend = getattr(frontend, hparams.frontend)
-        seq = _frontend.text_to_sequence(text, phone, p=hparams.replace_pronunciation_prob)
+        seq = _frontend.text_to_sequence(text, p=hparams.replace_pronunciation_prob)
 
         if platform.system() == "Windows":
             if hasattr(hparams, 'gc_probability'):
@@ -278,7 +276,7 @@ def sequence_mask(sequence_length, max_len=None):
 class MaskedL1Loss(nn.Module):
     def __init__(self):
         super(MaskedL1Loss, self).__init__()
-        self.criterion = nn.L1Loss(size_average=False)
+        self.criterion = nn.L1Loss(reduction="sum")
 
     def forward(self, input, target, lengths=None, mask=None, max_len=None):
         if lengths is None and mask is None:
@@ -300,7 +298,7 @@ def collate_fn(batch):
     downsample_step = hparams.downsample_step
     multi_speaker = len(batch[0]) == 4
 
-    # (text?) Lengths
+    # Lengths
     input_lengths = [len(x[0]) for x in batch]
     max_input_len = max(input_lengths)
 
@@ -389,10 +387,8 @@ def eval_model(global_step, writer, device, model, checkpoint_dir, ismultispeake
     #    "Some have accepted this as a miracle without any physical explanation.",
     #]
     texts = [
-        "Mais alors, dit Alice, si le monde n'a absolument aucun sens, qui nous empêche d'en inventer un ?",
-        "Chante, ô Muse, le héros aux cent détours qui a tant erré sur terre après avoir pillé la ville sainte de Troie,",
-	"qui a vu tant de villes et connu tant de peuples, qui sur mer a tant souffert en son coeur, luttant pour sa vie et le retour de ses équipages.",
-	"Déesse, fille de Zeus, débute où tu veux et raconte-nous l'histoire, à nous aussi.",
+	"Mais alors, dit Alice, si le monde n'a absolument aucun sens, qui nous empêche d'en inventer un ?",
+	"Chante, ô muse, le héros aux cent détours qui a tant erré sur terre après avoir pillé la ville sainte de Troie, qui a vu tant de villes et connu tant de peuples, qui sur mer a tant souffert en son coeur, luttant pour sa vie et le retour de ses équipages. Déesse, fille de Zeus, débute où tu veux, raconte-nous l'histoire, à nous aussi. "
     ]
     import synthesis
     synthesis._frontend = _frontend
@@ -410,7 +406,6 @@ def eval_model(global_step, writer, device, model, checkpoint_dir, ismultispeake
         speaker_str = "multispeaker{}".format(speaker_id) if speaker_id is not None else "single"
 
         for idx, text in enumerate(texts):
-            print("(text):",text)
             signal, alignment, _, mel = synthesis.tts(
                 model_eval, text, p=0, speaker_id=speaker_id, fast=True)
             signal /= np.max(np.abs(signal))
@@ -887,7 +882,7 @@ if __name__ == "__main__":
 
     data_root = args["--data-root"]
     if data_root is None:
-        data_root = join(dirname(__file__), "data", "synpaflex")
+        data_root = join(dirname(__file__), "data", "ljspeech")
 
     log_event_path = args["--log-event-path"]
     reset_optimizer = args["--reset-optimizer"]

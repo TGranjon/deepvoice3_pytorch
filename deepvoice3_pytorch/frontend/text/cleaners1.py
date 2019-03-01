@@ -18,9 +18,8 @@ from .numbers import normalize_numbers
 # Regular expression matching whitespace:
 _whitespace_re = re.compile(r'\s+')
 
-
-# List of (regular expression, replacement) pairs for abbreviations for English:
-_abbreviations_en = [(re.compile('\\b%s\\.' % x[0], re.IGNORECASE), x[1]) for x in [
+# List of (regular expression, replacement) pairs for abbreviations:
+_abbreviations = [(re.compile('\\b%s\\.' % x[0], re.IGNORECASE), x[1]) for x in [
     ('mrs', 'misess'),
     ('mr', 'mister'),
     ('dr', 'doctor'),
@@ -41,36 +40,9 @@ _abbreviations_en = [(re.compile('\\b%s\\.' % x[0], re.IGNORECASE), x[1]) for x 
     ('ft', 'fort'),
 ]]
 
-# List of (regular expression, replacement) pairs for abbreviationsi for French:
-_abbreviations_fr = [(re.compile('\\b%s\\.' % x[0], re.IGNORECASE), x[1]) for x in [
-    ('mme', 'madame'),
-    ('m', 'monsieur'),
-    ('mr', 'monsieur'),
-    ('mlle', 'mademoiselle'),
-    ('dr', 'doctor'),
-    ('st', 'saint'),
-    ('co', 'company'),
-    ('jr', 'junior'),
-    ('maj', 'major'),
-    ('gen', 'general'),
-    ('rev', 'reverend'),
-    ('lt', 'lieutenant'),
-    ('hon', 'honorable'),
-    ('sgt', 'sergeant'),
-    ('capt', 'captain'),
-    ('esq', 'esquire'),
-    ('ltd', 'limited'),
-    ('col', 'colonel'),
-]]
 
-
-def expand_abbreviations_fr(text):
-    for regex, replacement in _abbreviations_fr:
-        text = re.sub(regex, replacement, text)
-    return text
-
-def expand_abbreviations_en(text):
-    for regex, replacement in _abbreviations_en:
+def expand_abbreviations(text):
+    for regex, replacement in _abbreviations:
         text = re.sub(regex, replacement, text)
     return text
 
@@ -84,7 +56,6 @@ def lowercase(text):
 
 
 def collapse_whitespace(text):
-    text.strip()
     return re.sub(_whitespace_re, ' ', text)
 
 
@@ -95,7 +66,7 @@ def convert_to_ascii(text):
 def add_punctuation(text):
     if len(text) == 0:
         return text
-    if text[-1] not in '!,.:;?…':
+    if text[-1] not in '!,.:;?':
         text = text + '.'  # without this decoder is confused when to output EOS
     return text
 
@@ -114,15 +85,6 @@ def transliteration_cleaners(text):
     text = collapse_whitespace(text)
     return text
 
-def french_cleaners(text):
-    '''Pipeline for French text, including abbreviation expansion.'''
-    #text = convert_to_ascii(text)
-    #text = add_punctuation(text)
-    text = lowercase(text)
-    #text = expand_numbers(text)
-    text = expand_abbreviations_fr(text)
-    text = collapse_whitespace(text)
-    return text
 
 def english_cleaners(text):
     '''Pipeline for English text, including number and abbreviation expansion.'''
@@ -130,6 +92,6 @@ def english_cleaners(text):
     text = add_punctuation(text)
     text = lowercase(text)
     text = expand_numbers(text)
-    text = expand_abbreviations_en(text)
+    text = expand_abbreviations(text)
     text = collapse_whitespace(text)
     return text
