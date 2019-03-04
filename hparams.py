@@ -50,6 +50,16 @@ hparams = hparam_tf.hparam.HParams(
     # If False, assertion is added to ensure no clipping happens.
     allow_clipping_in_normalization=True,
 
+    coded_env_dim=64,
+    code_env=True,
+    code_aper=True,
+    f0max=2000.,
+    spmax=50.,
+    spmin=-50.,
+    apmax=1.,
+    apmin=-50.,
+    vocoder="world",
+
     # Model:
     downsample_step=4,  # must be 4 when builder="nyanko"
     outputs_per_step=1,  # must be 1 when builder="nyanko"
@@ -80,7 +90,7 @@ hparams = hparam_tf.hparam.HParams(
 
     # Data loader
     pin_memory=True,
-    num_workers=2,  # Set it to 1 when in Windows (MemoryError, THAllocator.c 0x5)
+    num_workers=8,  # Set it to 1 when in Windows (MemoryError, THAllocator.c 0x5)
 
     # Loss
     masked_loss_weight=0.5,  # (1-w)*loss + w * masked_loss
