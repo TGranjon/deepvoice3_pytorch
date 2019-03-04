@@ -84,7 +84,7 @@ def _load(checkpoint_path):
 
 def coupure(phrase):
     text = []
-    if len(phrase) >= 120: # Ce nombre a été choisi empiriquement mais peut être modifié.
+    if len(phrase) >= 120: # This number was selected empirically but can be modified.
         mots = phrase.split(' ')
         liste = []
         for mot in mots:
@@ -164,12 +164,12 @@ if __name__ == "__main__":
     os.makedirs(dst_dir, exist_ok=True)
     with open(text_list_file_path, "rb") as f:
         lines = f.readlines()
-        for idx, line in enumerate(lines): # Correspond à un fichier audio.
+        for idx, line in enumerate(lines): # This loop correspond to one audio file
             #text = line.decode("utf-8")[:-1]
             tx = re.sub("(_LSB_).*?(_RSB_)", "", line.decode("utf-8")[:-1])
             matchObj = re.findall('([^\.|\?|\!]+)([\.|\?|\!]+|$)', tx)
             texts = [join(x[0], x[1]).replace('/', '') for x in matchObj]
-            # Ajout de la coupure
+            # Adding coupure
             #texts = coupure(''.join(texts))
             waveform = np.empty((0,))
             for text in texts:

@@ -52,7 +52,7 @@ def mix_pronunciation(text, phonetic, p):
 
 def text_to_sequence(text, phonetic, p=0.0):
 	# 'text' = WordJTrans
-	# Appelé durant train.py.
+	# Called during train.py.
     if p >= 0:
         text = mix_pronunciation(text, phonetic, p)
     from deepvoice3_pytorch.frontend.text import text_to_sequence
