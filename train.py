@@ -490,7 +490,7 @@ def save_states(global_step, writer, mel_outputs, linear_outputs, attn, mel, y,
             nfft = pw.get_cheaptrick_fft_size(hparams.sample_rate)
             f0 = mel_output[:,0].astype(np.float64)
             sp = pw.decode_spectral_envelope(mel_output[:,1:(hparams.coded_env_dim+1)].astype(np.float64), hparams.sample_rate, nfft)
-            ap = pw.decode_aperiodicity(mel_tgt[:,(hparams.coded_env_dim+1):hparams.num_mels].astype(np.float64), hparams.sample_rate, nfft)
+            ap = pw.decode_aperiodicity(mel_output[:,(hparams.coded_env_dim+1):hparams.num_mels].astype(np.float64), hparams.sample_rate, nfft)
 
             signal = pw.synthesize(f0, sp, ap, hparams.sample_rate, pw.default_frame_period)
             path = join(checkpoint_dir, "step{:09d}_out.wav".format(
@@ -503,7 +503,7 @@ def save_states(global_step, writer, mel_outputs, linear_outputs, attn, mel, y,
             except:
                 print("Unexpected error :", sys.exc_info())
 
-            mel_tgt = mel[idx].cpu.data.numpy()
+            mel_tgt = mel[idx].cpu().data.numpy()
             mel_tgt = denormalize(mel_tgt)
 
             f0 = mel_tgt[:,0].astype(np.float64)
