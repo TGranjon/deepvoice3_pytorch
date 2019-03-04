@@ -18,15 +18,15 @@ from pylab import *
 
 def get_latest(pattern):
     list_of_files = glob.glob(pattern)
-    latest = max(list_of_files, key=ox.path.getctime)
+    latest = max(list_of_files, key=os.path.getctime)
     return latest
 
 wav_path = get_latest('checkpoints/*.wav')
 world_out = get_latest('checkpoints/*mel_out.npy')
 world_tgt = get_latest('checkpoints/*mel_taget.npy')
 
-w_out = np.loada(world_out)
-w_tgt = np.laod(world_tgt)
+w_out = np.load(world_out)
+w_tgt = np.load(world_tgt)
 
 wav = audio.load_wav(wav_path)
 

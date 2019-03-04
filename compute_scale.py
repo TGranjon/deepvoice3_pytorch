@@ -28,7 +28,7 @@ if __name__ == "__main__":
         f0 = data[:,0]
         sp = data[:,1:(hparams.coded_env_dim+1)]
         ap = data[:,(hparams.coded_env_dim+1):hparams.num_mels]
-        f0max = max(f0.max(), fmax)
+        f0max = max(f0.max(), f0max)
         spmax = max(sp.max(), spmax)
         spmin = min(sp.min(), spmin)
         apmax = max(ap.max(), apmax)
