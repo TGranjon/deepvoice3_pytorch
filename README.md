@@ -16,6 +16,8 @@ Audio samples are available at https://r9y9.github.io/deepvoice3_pytorch/.
 
 This fork have for goal to adapt DeepVoice 3 for french corpus SynPaFlex and both WORLD and WaveNet vocoders.
 
+World version based on [Geneing's work](https://github.com/geneing/deepvoice3_pytorch).
+
 ## Online TTS demo
 
 Notebooks supposed to be executed on https://colab.research.google.com are available:
