@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Analyze deepvoice data
+"""Analyze deepvoice data
 
 usage: analysis.py <data_root>
 

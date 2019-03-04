@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""
-Compute scale for world encoder.
+"""Compute scale for world encoder.
 
 usage: compute_scale.py <data_root>
 
