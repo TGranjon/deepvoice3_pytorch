@@ -89,7 +89,7 @@ def coupure(phrase):
         liste = []
         for mot in mots:
             liste.append(mot)
-            if (('.' in mot) | ('?' in mot) | ('...' in mot)) & ((mot != 'M.')):
+            if (('.' in mot) | ('?' in mot) | ('...' in mot) | ('…' in mot)) & ((mot != 'M.')):
                 text.append(' '.join(liste))
                 longu = len(text[-1])
                 stop = 1
