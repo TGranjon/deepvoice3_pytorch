@@ -391,8 +391,8 @@ def eval_model(global_step, writer, device, model, checkpoint_dir, ismultispeake
     texts = [
         "Mais alors, dit Alice, si le monde n'a absolument aucun sens, qui nous empêche d'en inventer un ?",
         "Chante, ô Muse, le héros aux cent détours qui a tant erré sur terre après avoir pillé la ville sainte de Troie,",
-	"qui a vu tant de villes et connu tant de peuples, qui sur mer a tant souffert en son coeur, luttant pour sa vie et le retour de ses équipages.",
-	"Déesse, fille de Zeus, débute où tu veux et raconte-nous l'histoire, à nous aussi.",
+	    "qui a vu tant de villes et connu tant de peuples, qui sur mer a tant souffert en son coeur, luttant pour sa vie et le retour de ses équipages.",
+	    "Déesse, fille de Zeus, débute où tu veux et raconte-nous l'histoire, à nous aussi.",
     ]
     import synthesis
     synthesis._frontend = _frontend
