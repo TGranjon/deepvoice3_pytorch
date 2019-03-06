@@ -179,10 +179,10 @@ if __name__ == "__main__":
         for idx, line in enumerate(lines): # This loop correspond to one audio file
             #text = line.decode("utf-8")[:-1]
             tx = re.sub("(_LSB_).*?(_RSB_)", "", line.decode("utf-8")[:-1])
-            matchObj = re.findall('([^\.|\?|\!]+)([\.|\?|\!]+|$)', tx)
-            texts = [join(x[0], x[1]).replace('/', '') for x in matchObj]
             # Adding coupure
             #texts = coupure(''.join(texts))
+            matchObj = re.findall('([^\.|\?|\!]+)([\.|\?|\!]+|$)', tx)
+            texts = [join(x[0], x[1]).replace('/', '') for x in matchObj]
             waveform = np.empty((0,))
             for text in texts:
                 words_t = nltk.word_tokenize(text)
