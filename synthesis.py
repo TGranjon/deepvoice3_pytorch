@@ -180,7 +180,7 @@ if __name__ == "__main__":
             #text = line.decode("utf-8")[:-1]
             tx = re.sub("(_LSB_).*?(_RSB_)", "", line.decode("utf-8")[:-1])
             # Adding coupure
-            #texts = coupure(''.join(texts))
+            #tx = coupure(''.join(tx))
             matchObj = re.findall('([^\.|\?|\!]+)([\.|\?|\!]+|$)', tx)
             texts = [join(x[0], x[1]).replace('/', '') for x in matchObj]
             waveform = np.empty((0,))
