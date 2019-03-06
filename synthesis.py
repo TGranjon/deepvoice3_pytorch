@@ -86,8 +86,8 @@ def _load(checkpoint_path):
 def asking(phrase):
     # We ask the user to add a '§' symbol at the cutting points.
     print("Sentence is too long for synthesis, please shorten it.")
-    print("Please rewrite this sentence and add a § at places you want to cut it.")
-    phrase = input(phrase)
+    print("Please rewrite this sentence and add a § at places you want to cut it.\n")
+    phrase = input(phrase+"\n")
     text = phrase.split('§')
     return text
 
@@ -101,7 +101,7 @@ def coupure(phrase):
         liste = []
         for mot in mots:
             liste.append(mot)
-            if (('.' in mot) | ('?' in mot) | ('...' in mot) | ('…' in mot)) & ((mot != 'M.')):
+            if (('.' in mot) | ('?' in mot) | ('...' in mot) | ('…' in mot) | (';' in mot)) & ((mot != 'M.')):
                 text.append(' '.join(liste))
                 longu = len(text[-1])
                 stop = 1
