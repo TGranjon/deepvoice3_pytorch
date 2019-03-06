@@ -82,9 +82,21 @@ def _load(checkpoint_path):
                                 map_location=lambda storage, loc: storage)
     return checkpoint
 
+# If a sentence is too long for synthesis, we ask the user to cut it in smaller sentences and learn the cutting points
+def asking(phrase):
+    # We ask the user to add a '§' symbol at the cutting points.
+    print("Sentence is too long for synthesis, please shorten it.")
+    print("Please rewrite this sentence and add a § at places you want to cut it.")
+    phrase = input(phrase)
+    text = phrase.split('§')
+    return text
+
 def coupure(phrase):
     text = []
-    if len(phrase) >= 120: # This number was selected empirically but can be modified.
+    if len(phrase) >= 496: # This number correspond to the biggest sentence in the corpus.
+        text = asking(phrase)
+        return text
+    if len(phrase) >= 300: # This number correspond to the length of 10% of the corpus.
         mots = phrase.split(' ')
         liste = []
         for mot in mots:
