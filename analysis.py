@@ -23,7 +23,7 @@ def get_latest(pattern):
 
 wav_path = get_latest('checkpoints/*.wav')
 world_out = get_latest('checkpoints/*mel_out.npy')
-world_tgt = get_latest('checkpoints/*mel_taget.npy')
+world_tgt = get_latest('checkpoints/*mel_target.npy')
 
 w_out = np.load(world_out)
 w_tgt = np.load(world_tgt)

@@ -3,8 +3,8 @@ from functools import partial
 import numpy as np
 import os
 import audio
+import pyworld as pw
 from hparams import hparams
-
 
 def build_from_path(in_dir, out_dir, num_workers=1, tqdm=lambda x: x):
     '''Preprocesses the SynPaFlex dataset from a given input path into a given output directory.
@@ -58,18 +58,33 @@ def _process_utterance(out_dir, index, wav_path, text, phone):
     if hparams.rescaling:
         wav = wav / np.abs(wav).max() * hparams.rescaling_max
 
-    # Compute the linear-scale spectrogram from the wav:
-    spectrogram = audio.spectrogram(wav).astype(np.float32)
-    n_frames = spectrogram.shape[1]
+    if hparams.vocoder=="world":
+        spectrogram = audio.spectrogram(wav).astype(np.float32)
+        f0, sp, ap = pw.wav2world(wav.astype(np.double), hparams.sample_rate)
+        ap_coded=pw.code_aperiodicity(ap,hparams.sample_rate)
+        sp_coded=pw.code_spectral_envelope(sp,hparams.sample_rate,hparams.coded_env_dim)
+        
+        world_spec = np.hstack([f0[:,np.newaxis],sp_coded,ap_coded])
+        n_frames = world_spec.shape[0]
+        spectrogram_filename = 'synpaflex-spec-%05d.npy' % index
+        encoded_filename = 'synpaflex-world-%05d.npy' % index
+        np.save(os.path.join(out_dir, spectrogram_filename), spectrogram.T, allow_pickle=False)
+        np.save(os.path.join(out_dir, encoded_filename), world_spec, allow_pickle=False)
 
-    # Compute a mel-scale spectrogram from the wav:
-    mel_spectrogram = audio.melspectrogram(wav).astype(np.float32)
+    else:
+        # Compute the linear-scale spectrogram from the wav:
+        spectrogram = audio.spectrogram(wav).astype(np.float32)
+        n_frames = spectrogram.shape[1]
 
-    # Write the spectrograms to disk:
-    spectrogram_filename = 'synpaflex-spec-%05d.npy' % index
-    mel_filename = 'synpaflex-mel-%05d.npy' % index
-    np.save(os.path.join(out_dir, spectrogram_filename), spectrogram.T, allow_pickle=False)
-    np.save(os.path.join(out_dir, mel_filename), mel_spectrogram.T, allow_pickle=False)
+        # Compute a mel-scale spectrogram from the wav:
+        mel_spectrogram = audio.melspectrogram(wav).astype(np.float32)
+
+        # Write the spectrograms to disk:
+        spectrogram_filename = 'synpaflex-spec-%05d.npy' % index
+        encoded_filename = 'synpaflex-mel-%05d.npy' % index
+        np.save(os.path.join(out_dir, spectrogram_filename), spectrogram.T, allow_pickle=False)
+        np.save(os.path.join(out_dir, encoded_filename), mel_spectrogram.T, allow_pickle=False)
+
 
     # Return a tuple describing this training example:
-    return (spectrogram_filename, mel_filename, n_frames, text, phone)
+    return (spectrogram_filename, encoded_filename, n_frames, text, phone)

@@ -46,7 +46,9 @@ from nnmnkwii.datasets import FileSourceDataset, FileDataSource
 from os.path import join, expanduser
 import random
 
-import librosa.display
+#import librosa.display
+import matplotlib as mpl
+mpl.use('Agg')
 from matplotlib import pyplot as plt
 import sys
 import os
@@ -547,7 +549,7 @@ def save_states(global_step, writer, mel_outputs, linear_outputs, attn, mel, y,
         writer.add_image("Target linear spectrogram", spectrogram, global_step)
 
     #ei
-    path = join(checkpoint_dir, "step{:09d}_mel_taget.npy".format(
+    path = join(checkpoint_dir, "step{:09d}_mel_target.npy".format(
                 global_step))
     mel_output = mel[idx].cpu().data.numpy()
     np.save(path, denormalize(mel_output))

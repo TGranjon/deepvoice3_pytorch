@@ -22,7 +22,7 @@ if __name__ == "__main__":
     spmax = -1.e6
     spmin = 1.e6
     apmax = -1.e6
-    apmix = 1.e6
+    apmin = 1.e6
     for fname in glob.glob(data_root+"/*.npy"):
         data = np.load(fname)
         f0 = data[:,0]
@@ -33,7 +33,7 @@ if __name__ == "__main__":
         spmin = min(sp.min(), spmin)
         apmax = max(ap.max(), apmax)
         apmin = min(ap.min(), apmin)
-        print(f0.max, sp.max(), sp.min(), ap.max(), ap.min())
+        print(f0.max(), sp.max(), sp.min(), ap.max(), ap.min())
 
     print(f0max, spmax, spmin, apmax, apmin)
     sys.exit(0)

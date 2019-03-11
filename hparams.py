@@ -61,14 +61,14 @@ hparams = hparam_tf.hparam.HParams(
     vocoder="world",
 
     # Model:
-    downsample_step=4,  # must be 4 when builder="nyanko"
+    downsample_step=1,  # must be 4 when builder="nyanko"
     outputs_per_step=1,  # must be 1 when builder="nyanko"
     embedding_weight_std=0.1,
     speaker_embedding_weight_std=0.01,
     padding_idx=0,
     # Maximum number of input text length
     # try setting larger value if you want to give very long text input
-    max_positions=512,
+    max_positions=4*512,
     dropout=1 - 0.95,
     kernel_size=3,
     text_embed_dim=128,
@@ -100,7 +100,7 @@ hparams = hparam_tf.hparam.HParams(
     # Adding the divergence to the loss stabilizes training, expecially for
     # very deep (> 10 layers) networks.
     # Binary div loss seems has approx 10x scale compared to L1 loss, so I choose 0.1.
-    binary_divergence_weight=0.1,  # set 0 to disable
+    binary_divergence_weight=0.01,  # set 0 to disable
     use_guided_attention=True,
     guided_attention_sigma=0.2,
 
@@ -118,7 +118,7 @@ hparams = hparam_tf.hparam.HParams(
     clip_thresh=0.1,
 
     # Save
-    checkpoint_interval=10000,
+    checkpoint_interval=500,
     eval_interval=10000,
     save_optimizer_state=True,
 
