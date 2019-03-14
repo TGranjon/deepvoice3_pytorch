@@ -156,7 +156,7 @@ if __name__ == "__main__":
         checkpoint_name = splitext(basename(checkpoint_seq2seq_path))[0]
     else:
         checkpoint = _load(checkpoint_path)
-        model.seq2seq.load_state_dict(checkpoint["state_dict"])
+        model.load_state_dict(checkpoint["state_dict"])
         checkpoint_name = splitext(basename(checkpoint_path))[0]
 
     model.seq2seq.decoder.max_decoder_steps = max_decoder_steps
