@@ -278,7 +278,7 @@ def sequence_mask(sequence_length, max_len=None):
 class MaskedL1Loss(nn.Module):
     def __init__(self):
         super(MaskedL1Loss, self).__init__()
-        self.criterion = nn.L1Loss(size_average=False)
+        self.criterion = nn.L1Loss(reduction="sum")
 
     def forward(self, input, target, lengths=None, mask=None, max_len=None):
         if lengths is None and mask is None:
@@ -393,6 +393,8 @@ def eval_model(global_step, writer, device, model, checkpoint_dir, ismultispeake
         "Chante, ô Muse, le héros aux cent détours qui a tant erré sur terre après avoir pillé la ville sainte de Troie,",
 	    "qui a vu tant de villes et connu tant de peuples, qui sur mer a tant souffert en son coeur, luttant pour sa vie et le retour de ses équipages.",
 	    "Déesse, fille de Zeus, débute où tu veux et raconte-nous l'histoire, à nous aussi.",
+        "après tout , la vie de ces gens est si misérable , que l' annonce de la mort n' a rien d' effrayant pour eux .",
+        "Après tout, la vie de ces gens est si misérable, que l’annonce de la mort n’a rien d’effrayant pour eux.",
     ]
     import synthesis
     synthesis._frontend = _frontend
