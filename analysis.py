@@ -21,9 +21,9 @@ def get_latest(pattern):
     latest = max(list_of_files, key=os.path.getctime)
     return latest
 
-wav_path = get_latest('checkpoints/*.wav')
-world_out = get_latest('checkpoints/*mel_out.npy')
-world_tgt = get_latest('checkpoints/*mel_target.npy')
+wav_path = get_latest(sys.argv[1] + 'checkpoints/*.wav')
+world_out = get_latest(sys.argv[1] + 'checkpoints/*mel_out.npy')
+world_tgt = get_latest(sys.argv[1] + 'checkpoints/*mel_target.npy')
 
 w_out = np.load(world_out)
 w_tgt = np.load(world_tgt)
