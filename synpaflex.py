@@ -60,6 +60,7 @@ def _process_utterance(out_dir, index, wav_path, text, phone):
 
     if hparams.vocoder=="world":
         spectrogram = audio.spectrogram(wav).astype(np.float32)
+
         f0, sp, ap = pw.wav2world(wav.astype(np.double), hparams.sample_rate)
         ap_coded=pw.code_aperiodicity(ap,hparams.sample_rate)
         sp_coded=pw.code_spectral_envelope(sp,hparams.sample_rate,hparams.coded_env_dim)
