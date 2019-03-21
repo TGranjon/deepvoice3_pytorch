@@ -394,7 +394,7 @@ def eval_model(global_step, writer, device, model, checkpoint_dir, ismultispeake
 	    "qui a vu tant de villes et connu tant de peuples, qui sur mer a tant souffert en son coeur, luttant pour sa vie et le retour de ses équipages.",
 	    "Déesse, fille de Zeus, débute où tu veux et raconte-nous l'histoire, à nous aussi.",
         "après tout , la vie de ces gens est si misérable , que l' annonce de la mort n' a rien d' effrayant pour eux .",
-        "Après tout, la vie de ces gens est si misérable, que l’annonce de la mort n’a rien d’effrayant pour eux.",
+        "Après tout, la vie de ces gens est si misérable, que l'annonce de la mort n'a rien d'effrayant pour eux.",
     ]
     import synthesis
     synthesis._frontend = _frontend
