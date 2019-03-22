@@ -19,11 +19,12 @@ valid_symbols = [
     'e~', 'a~', 'o~', '9~', 'E~', 'A~', 'O~',
     'p', 'b', 't', 'd', 'k', 'g',
     'f', 'v', 's', 'z', 'S', 'Z', 'j',
-    'l', 'R','w', 'H',
+    'l', 'R', 'w', 'H',
     'm', 'n', 'J', 'N',
 ]
 
 # Prepend "%" to Xsampa symbols to ensure uniqueness (some are the same as uppercase letters):
 _xsampa = ['+' + s for s in valid_symbols]
+
 # Export all symbols:
 symbols = [_pad, _eos] + list(_characters) + _xsampa

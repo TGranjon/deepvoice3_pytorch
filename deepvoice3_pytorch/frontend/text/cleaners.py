@@ -41,7 +41,7 @@ _abbreviations_en = [(re.compile('\\b%s\\.' % x[0], re.IGNORECASE), x[1]) for x 
     ('ft', 'fort'),
 ]]
 
-# List of (regular expression, replacement) pairs for abbreviationsi for French:
+# List of (regular expression, replacement) pairs for abbreviations for French:
 _abbreviations_fr = [(re.compile('\\b%s\\.' % x[0], re.IGNORECASE), x[1]) for x in [
     ('mme', 'madame'),
     ('m', 'monsieur'),
