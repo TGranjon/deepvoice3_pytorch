@@ -12,6 +12,7 @@ data
 datasets
 testout
 .idea
+.vscode/
 
 # Created by https://www.gitignore.io
 
