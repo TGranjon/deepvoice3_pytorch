@@ -62,8 +62,8 @@ def _process_utterance(out_dir, index, wav_path, text, phone):
         spectrogram = audio.spectrogram(wav).astype(np.float32)
 
         f0, sp, ap = pw.wav2world(wav.astype(np.double), hparams.sample_rate)
-        ap_coded=pw.code_aperiodicity(ap,hparams.sample_rate)
-        sp_coded=pw.code_spectral_envelope(sp,hparams.sample_rate,hparams.coded_env_dim)
+        ap_coded = pw.code_aperiodicity(ap, hparams.sample_rate)
+        sp_coded = pw.code_spectral_envelope(sp,hparams.sample_rate, hparams.coded_env_dim)
         
         world_spec = np.hstack([f0[:,np.newaxis],sp_coded,ap_coded])
         n_frames = world_spec.shape[0]
