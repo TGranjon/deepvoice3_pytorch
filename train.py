@@ -46,9 +46,9 @@ from nnmnkwii.datasets import FileSourceDataset, FileDataSource
 from os.path import join, expanduser
 import random
 
-#import librosa.display
-import matplotlib as mpl
-mpl.use('Agg')
+import librosa.display
+#import matplotlib as mpl
+#mpl.use('Agg')
 from matplotlib import pyplot as plt
 import sys
 import os
@@ -737,7 +737,7 @@ Please set a larger value for ``max_position`` in hyper parameters.""".format(
                     input_lengths=input_lengths)
             elif train_seq2seq:
                 assert speaker_ids is None
-                mel_outputs, attn, done_hat, decoder_states = model.seq2seq(
+                mel_outputs, attn, done_hat, _ = model.seq2seq(
                     x, mel,
                     text_positions=text_positions, frame_positions=frame_positions,
                     input_lengths=input_lengths)
