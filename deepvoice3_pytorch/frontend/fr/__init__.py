@@ -30,13 +30,12 @@ def _maybe_get_arpabet(word, p):
     return '{%s}' % phonemes if random() < p else word
 
 def _dont_get_arpabet(word, phone, p):
-    try:
-        if phone == "\n":
-            phonemes = word
-        else:
-            phonemes = phone
-    except KeyError:
-        return word
+    if phone == "\n":
+        phonemes = word
+    elif phone == " ":
+        phonemes = word
+    else:
+        phonemes = phone
     return '{%s}' % phonemes if random() < p else word
     #return phonemes if random() < p else word
 
