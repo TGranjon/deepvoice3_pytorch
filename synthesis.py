@@ -82,50 +82,6 @@ def _load(checkpoint_path):
                                 map_location=lambda storage, loc: storage)
     return checkpoint
 
-# If a sentence is too long for synthesis, we ask the user to cut it in smaller sentences and learn the cutting points
-def asking(phrase):
-    # We ask the user to add a '§' symbol at the cutting points.
-    print("Sentence is too long for synthesis, please shorten it.")
-    print("Please rewrite this sentence and add a § at places you want to cut it.\n")
-    phrase = input(phrase+"\n")
-    text = phrase.split('§')
-    return text
-
-def coupure(phrase):
-    text = []
-    if len(phrase) >= 496: # This number correspond to the biggest sentence in the corpus.
-        text = asking(phrase)
-        return text
-    if len(phrase) >= 300: # This number correspond to the length of 10% of the corpus.
-        mots = phrase.split(' ')
-        liste = []
-        for mot in mots:
-            liste.append(mot)
-            if (('.' in mot) | ('?' in mot) | ('...' in mot) | ('…' in mot) | (';' in mot)) & ((mot != 'M.')):
-                text.append(' '.join(liste))
-                longu = len(text[-1])
-                stop = 1
-                liste_2 = []
-                while (longu >= 120) & (stop != 0):
-                     if stop > 0:
-                        mots_2 = text[-1].split(' ')
-                        text.pop()
-                     for mot_2 in mots_2:
-                        liste_2.append(mot_2)
-                        if (('],' in mot_2)):
-                            text.append(' '.join(liste_2))
-                            liste_2 = []
-                     stop -= 1
-                if len(liste_2) != 0:
-                     text.append(' '.join(liste_2))
-                liste = []
-        if len(liste) != 0:
-             text.append(' '.join(liste))
-    if len(text) != 0:
-         return text
-    else:
-         return [phrase]
-
 if __name__ == "__main__":
     args = docopt(__doc__)
     print("Command line args:\n", args)
@@ -185,8 +141,6 @@ if __name__ == "__main__":
             waveform = np.empty((0,))
             for text in texts:
                 print("text:",text)
-                # Adding coupure.
-                #text = coupure(text)
                 words_t = nltk.word_tokenize(text)
                 waveform_t, alignment_t, _, _ = tts(
                     model, text, p=replace_pronunciation_prob, speaker_id=speaker_id, fast=True)
