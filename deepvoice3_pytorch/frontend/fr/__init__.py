@@ -32,7 +32,7 @@ def _maybe_get_arpabet(word, p):
 def _dont_get_arpabet(word, phone, p):
     if phone == "\n":
         phonemes = word
-    elif phone == " ":
+    elif phone == "XX":
         phonemes = word
     else:
         phonemes = phone
