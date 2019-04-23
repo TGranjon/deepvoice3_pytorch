@@ -34,6 +34,10 @@ def _dont_get_arpabet(word, phone, p):
         phonemes = word
     elif phone == "XX":
         phonemes = word
+    elif phone == "":
+        phonemes = word
+    elif phone == " ":
+        phonemes = word
     else:
         phonemes = phone
     return '{%s}' % phonemes if random() < p else word
