@@ -59,9 +59,7 @@ def text_to_sequence(text, phonetic, p=0.0):
     if p >= 0:
         text = mix_pronunciation(text, phonetic, p)
     from deepvoice3_pytorch.frontend.text import text_to_sequence
-    print("before (phone):",text)
     text = text_to_sequence(text, ["french_cleaners"])
-    print("after (phone):",text)
     return text
 
 def text_to_sequence_original(text, p):
