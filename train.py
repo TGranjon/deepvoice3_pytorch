@@ -396,6 +396,7 @@ def eval_model(global_step, writer, device, model, checkpoint_dir, ismultispeake
         "après tout , la vie de ces gens est si misérable , que l' annonce de la mort n' a rien d' effrayant pour eux .",
         "Après tout, la vie de ces gens est si misérable, que l'annonce de la mort n'a rien d'effrayant pour eux.",
     ]
+
     import synthesis
     synthesis._frontend = _frontend
 
@@ -889,7 +890,7 @@ if __name__ == "__main__":
 
     data_root = args["--data-root"]
     if data_root is None:
-        data_root = join(dirname(__file__), "data", "synpaflex")
+        data_root = join(dirname(__file__), "data", "ljspeech")
 
     log_event_path = args["--log-event-path"]
     reset_optimizer = args["--reset-optimizer"]

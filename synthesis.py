@@ -132,10 +132,9 @@ if __name__ == "__main__":
     os.makedirs(dst_dir, exist_ok=True)
     with open(text_list_file_path, "rb") as f:
         lines = f.readlines()
-        for idx, line in enumerate(lines): # This loop correspond to one audio file
+        for idx, line in enumerate(lines):
             #text = line.decode("utf-8")[:-1]
             tx = re.sub("(_LSB_).*?(_RSB_)", "", line.decode("utf-8")[:-1])
-            #matchObj = re.findall('([^\.|\?|\!|\;|\.\.\.|\…]+)([\.|\?|\!|\;|\.\.\.|\…]+|$)', tx)
             matchObj = re.findall('([^\.|\?|\!]+)([\.|\?|\!]+|$)', tx)
             texts = [join(x[0], x[1]).replace('/', '') for x in matchObj]
             waveform = np.empty((0,))
