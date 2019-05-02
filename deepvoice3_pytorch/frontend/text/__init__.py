@@ -27,8 +27,9 @@ def text_to_sequence(text, cleaner_names):
     sequence = []
     
     # Check for curly braces and treat their contents as ARPAbet:
+    print("from frontend.txt:",text)
     while len(text):
-        print("from frontend.txt:",text)
+        #print("from frontend.txt:",text)
         m = _curly_re.match(text)
         #print(text)
         if not m:
