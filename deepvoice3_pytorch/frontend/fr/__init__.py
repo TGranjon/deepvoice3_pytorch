@@ -31,13 +31,13 @@ def _maybe_get_arpabet(word, p):
 
 def _dont_get_arpabet(word, phone, p):
     if phone == "\n":
-        phonemes = word
+        return word
     elif phone == "XX":
-        phonemes = word
+        return word
     elif phone == "":
-        phonemes = word
+        return word
     elif phone == " ":
-        phonemes = word
+        return word
     else:
         phonemes = phone
     return '{%s}' % phonemes if random() < p else word
@@ -59,11 +59,14 @@ def text_to_sequence(text, phonetic, p=0.0):
     if p >= 0:
         text = mix_pronunciation(text, phonetic, p)
     from deepvoice3_pytorch.frontend.text import text_to_sequence
+    print("before (phone):",text)
     text = text_to_sequence(text, ["french_cleaners"])
+    print("after (phone):",text)
     return text
 
 def text_to_sequence_original(text, p):
     from deepvoice3_pytorch.frontend.text import text_to_sequence
     text = text_to_sequence(text, ["french_cleaners"])
+    print("after (original)",text)
     return text
 from deepvoice3_pytorch.frontend.text import sequence_to_text
