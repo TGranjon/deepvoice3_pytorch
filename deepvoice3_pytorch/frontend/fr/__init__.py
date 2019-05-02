@@ -65,6 +65,5 @@ def text_to_sequence(text, phonetic, p=0.0):
 def text_to_sequence_original(text, p):
     from deepvoice3_pytorch.frontend.text import text_to_sequence
     text = text_to_sequence(text, ["french_cleaners"])
-    print("after (original)",text)
     return text
 from deepvoice3_pytorch.frontend.text import sequence_to_text
