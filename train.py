@@ -300,7 +300,7 @@ def collate_fn(batch):
     downsample_step = hparams.downsample_step
     multi_speaker = len(batch[0]) == 4
 
-    # (text?) Lengths
+    # Lengths
     input_lengths = [len(x[0]) for x in batch]
     max_input_len = max(input_lengths)
 
