@@ -9,6 +9,7 @@ options:
     --preset=<json>                   Path of preset parameters (json).
     --checkpoint-seq2seq=<path>       Load seq2seq model from checkpoint path.
     --checkpoint-postnet=<path>       Load postnet model from checkpoint path.
+    --checkpoint-wavenet=<path>       Load WaveNet vocoder.
     --file-name-suffix=<s>            File name suffix [default: ].
     --max-decoder-steps=<N>           Max decoder steps [default: 500].
     --replace_pronunciation_prob=<N>  Prob [default: 0.0].
@@ -32,14 +33,14 @@ nltk.download('punkt')
 from deepvoice3_pytorch import frontend
 from hparams import hparams, hparams_debug_string
 
-#from tqdm import tqdm
+from tqdm import tqdm
 
 use_cuda = torch.cuda.is_available()
 device = torch.device("cuda" if use_cuda else "cpu")
 _frontend = None  # to be set later
 
 
-def tts(model, text, p=0, speaker_id=None, fast=False):
+def tts(model, text, p=0, speaker_id=None, fast=False, wavenet=None):
     """Convert text to speech waveform given a deepvoice3 model.
 
     Args:
@@ -51,7 +52,7 @@ def tts(model, text, p=0, speaker_id=None, fast=False):
     if fast:
         model.make_generation_fast_()
 
-    sequence = np.array(_frontend.text_to_sequence_original(text, p=p))
+    sequence = np.array(_frontend.text_to_sequence(text, p=p))
     print('sequence to synthesize: ', sequence)
     sequence = torch.from_numpy(sequence).unsqueeze(0).long().to(device)
     text_positions = torch.arange(1, sequence.size(-1) + 1).unsqueeze(0).long().to(device)
@@ -69,7 +70,28 @@ def tts(model, text, p=0, speaker_id=None, fast=False):
     mel = audio._denormalize(mel)
 
     # Predicted audio signal
-    waveform = audio.inv_spectrogram(linear_output.T)
+    if wavenet is not None:
+        wavenet = wavenet.to(device)
+        wavenet.eval()
+        if fast:
+            wavenet.make_generation_fast_()
+
+        # TODO: assuming scalar input
+        initial_value = 0.0
+        initial_input = torch.zeros(1, 1, 1).fill_(initial_value).to(device)
+        # (B, T, C) -> (B, C, T)
+        c = mel_outputs.transpose(1, 2).contiguous()
+        g = None
+        Tc = c.size(-1)
+        length = Tc * 256
+        initial_input = initial_input.to(device)
+        c = c.to(device)
+        waveform = wavenet.incremental_forward(
+            initial_input, c=c, g=g, T=length, tqdm=tqdm, softmax=True, quantize=True,
+            lod_scale_min=float(np.log(1e-14)))
+        waveform = waveform.view(-1)/cpu().data.numpy()
+    else:
+        waveform = audio.inv_spectrogram(linear_output.T)
 
     return waveform, alignment, spectrogram, mel
 
@@ -90,6 +112,7 @@ if __name__ == "__main__":
     dst_dir = args["<dst_dir>"]
     checkpoint_seq2seq_path = args["--checkpoint-seq2seq"]
     checkpoint_postnet_path = args["--checkpoint-postnet"]
+    checkpoint_wavenet_path = args["--chcekpoint-wavenet"]
     max_decoder_steps = int(args["--max-decoder-steps"])
     file_name_suffix = args["--file-name-suffix"]
     replace_pronunciation_prob = float(args["--replace_pronunciation_prob"])
@@ -127,6 +150,18 @@ if __name__ == "__main__":
         model.load_state_dict(checkpoint["state_dict"])
         checkpoint_name = splitext(basename(checkpoint_path))[0]
 
+    # Load WaveNet vocoder
+    if checkpoint_wavenet_path is not None:
+        from wavenet_vocoder import builder
+        wavenet = builder.wavenet(out_channels=3 * 10, layers=24, stacks=4, residual_channels=512,
+                                  gate_channels=512, skip_out_channels=256, dropout=1 - 0.95,
+                                  kernel_size=3, weight_normalization=True, cin_channels=80,
+                                  upsample_conditional_features=True, upsample_scales=[4, 4, 4, 4],
+                                  freq_axis_kernel_size=3, gin_channels=-1, scalar_input=True)
+        checkpoint = torch.load(checkpoint_wavenet_path)
+        wavenet.load_state_dict(checkpoint["state_dict"])
+    else:
+        wavenet = None
     model.seq2seq.decoder.max_decoder_steps = max_decoder_steps
 
     os.makedirs(dst_dir, exist_ok=True)
@@ -142,7 +177,8 @@ if __name__ == "__main__":
                 print("text:",text)
                 words_t = nltk.word_tokenize(text)
                 waveform_t, alignment_t, _, _ = tts(
-                    model, text, p=replace_pronunciation_prob, speaker_id=speaker_id, fast=True)
+                    model, text, p=replace_pronunciation_prob, speaker_id=speaker_id, fast=True,
+                    wavenet=wavenet)
                 #add a silence of 500ms at 22050Hz
                 waveform = np.concatenate((waveform, waveform_t))
                 #print(waveform.shape, waveform_t.shape)

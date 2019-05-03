@@ -53,16 +53,11 @@ def mix_pronunciation(text, phonetic, p):
         i += 1
     return text_new
 
-def text_to_sequence(text, phonetic, p=0.0):
+def text_to_sequence(text, phonetic=None, p=0.0):
 	# 'text' = WordJTrans
 	# Called during train.py.
-    if p >= 0:
+    if (phonetic and p >= 0):
         text = mix_pronunciation(text, phonetic, p)
-    from deepvoice3_pytorch.frontend.text import text_to_sequence
-    text = text_to_sequence(text, ["french_cleaners"])
-    return text
-
-def text_to_sequence_original(text, p):
     from deepvoice3_pytorch.frontend.text import text_to_sequence
     text = text_to_sequence(text, ["french_cleaners"])
     return text
