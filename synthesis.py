@@ -88,7 +88,7 @@ def tts(model, text, p=0, speaker_id=None, fast=False, wavenet=None):
         c = c.to(device)
         waveform = wavenet.incremental_forward(
             initial_input, c=c, g=g, T=length, tqdm=tqdm, softmax=True, quantize=True,
-            lod_scale_min=float(np.log(1e-14)))
+            log_scale_min=float(np.log(1e-14)))
         waveform = waveform.view(-1).cpu().data.numpy()
     else:
         waveform = audio.inv_spectrogram(linear_output.T)
