@@ -89,7 +89,7 @@ def tts(model, text, p=0, speaker_id=None, fast=False, wavenet=None):
         waveform = wavenet.incremental_forward(
             initial_input, c=c, g=g, T=length, tqdm=tqdm, softmax=True, quantize=True,
             lod_scale_min=float(np.log(1e-14)))
-        waveform = waveform.view(-1)/cpu().data.numpy()
+        waveform = waveform.view(-1).cpu().data.numpy()
     else:
         waveform = audio.inv_spectrogram(linear_output.T)
 
@@ -112,7 +112,7 @@ if __name__ == "__main__":
     dst_dir = args["<dst_dir>"]
     checkpoint_seq2seq_path = args["--checkpoint-seq2seq"]
     checkpoint_postnet_path = args["--checkpoint-postnet"]
-    checkpoint_wavenet_path = args["--chcekpoint-wavenet"]
+    checkpoint_wavenet_path = args["--checkpoint-wavenet"]
     max_decoder_steps = int(args["--max-decoder-steps"])
     file_name_suffix = args["--file-name-suffix"]
     replace_pronunciation_prob = float(args["--replace_pronunciation_prob"])
