@@ -92,7 +92,6 @@ def tts(model, text, p=0, speaker_id=None, fast=False, wavenet=None):
         waveform = waveform.view(-1).cpu().data.numpy()
     else:
         waveform = audio.inv_spectrogram(linear_output.T)
-
     return waveform, alignment, spectrogram, mel
 
 
@@ -181,8 +180,6 @@ if __name__ == "__main__":
                     wavenet=wavenet)
                 #add a silence of 500ms at 22050Hz
                 waveform = np.concatenate((waveform, waveform_t))
-                #print(waveform.shape, waveform_t.shape)
-                #print(np.max(waveform), np.max(waveform_t))
 
             words = words_t
             alignment = alignment_t
